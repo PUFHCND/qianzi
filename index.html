@@ -5,11 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>手机签字功能</title>
   <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
     #signature-pad {
       border: 1px solid #ccc;
-      width: 100%;
-      height: 300px;
       touch-action: none; /* 使触摸事件生效 */
+      margin: 20px auto;
+      display: block;
     }
     .button-container {
       margin-top: 10px;
@@ -39,13 +45,31 @@
 
   <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
   <script>
-    // 获取画布元素和按钮
+    // 获取画布和按钮
     const canvas = document.getElementById('signature-pad');
     const clearButton = document.getElementById('clear');
     const saveButton = document.getElementById('save');
 
-    // 设置 SignaturePad 对象
-    const signaturePad = new SignaturePad(canvas);
+    // 设置画布的真实像素尺寸与显示尺寸一致
+    function resizeCanvas() {
+      const ratio = Math.max(window.devicePixelRatio || 1, 1);
+      canvas.width = canvas.offsetWidth * ratio;
+      canvas.height = canvas.offsetHeight * ratio;
+      canvas.getContext('2d').scale(ratio, ratio);
+    }
+
+    // 初始化画布尺寸
+    canvas.style.width = '90%'; // 显示宽度
+    canvas.style.height = '300px'; // 显示高度
+    resizeCanvas(); // 调整实际绘制尺寸
+
+    // 创建 SignaturePad 对象
+    const signaturePad = new SignaturePad(canvas, {
+      penColor: "black", // 设置画笔颜色
+      minWidth: 0.5, // 最小笔触宽度
+      maxWidth: 2.5, // 最大笔触宽度
+      throttle: 16 // 提高响应速度
+    });
 
     // 清除签名
     clearButton.addEventListener('click', () => {
@@ -55,13 +79,16 @@
     // 保存签名
     saveButton.addEventListener('click', () => {
       if (!signaturePad.isEmpty()) {
-        const dataUrl = signaturePad.toDataURL(); // 获取签名的Data URL
+        const dataUrl = signaturePad.toDataURL();
         console.log('签名已保存：', dataUrl);
-        // 在这里你可以将签名图片上传到服务器或者保存到本地
+        alert('签名已保存，请检查控制台输出的图片URL！');
       } else {
-        alert('请先进行签名');
+        alert('请先进行签名！');
       }
     });
+
+    // 监听窗口大小变化，重新调整画布
+    window.addEventListener('resize', resizeCanvas);
   </script>
 
 </body>
