@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>手机签字功能</title>
+  <style>
+    #signature-pad {
+      border: 1px solid #ccc;
+      width: 100%;
+      height: 300px;
+      touch-action: none; /* 使触摸事件生效 */
+    }
+    .button-container {
+      margin-top: 10px;
+      text-align: center;
+    }
+    .btn {
+      padding: 10px 20px;
+      margin: 5px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>签字区域</h2>
+  
+  <!-- 用于签字的画布 -->
+  <canvas id="signature-pad"></canvas>
+
+  <div class="button-container">
+    <button class="btn" id="clear">清除</button>
+    <button class="btn" id="save">保存签名</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+  <script>
+    // 获取画布元素和按钮
+    const canvas = document.getElementById('signature-pad');
+    const clearButton = document.getElementById('clear');
+    const saveButton = document.getElementById('save');
+
+    // 设置 SignaturePad 对象
+    const signaturePad = new SignaturePad(canvas);
+
+    // 清除签名
+    clearButton.addEventListener('click', () => {
+      signaturePad.clear();
+    });
+
+    // 保存签名
+    saveButton.addEventListener('click', () => {
+      if (!signaturePad.isEmpty()) {
+        const dataUrl = signaturePad.toDataURL(); // 获取签名的Data URL
+        console.log('签名已保存：', dataUrl);
+        // 在这里你可以将签名图片上传到服务器或者保存到本地
+      } else {
+        alert('请先进行签名');
+      }
+    });
+  </script>
+
+</body>
+</html>
